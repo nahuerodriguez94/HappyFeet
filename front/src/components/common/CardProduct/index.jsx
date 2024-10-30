@@ -19,13 +19,19 @@ export const CardProduct = ({ product }) => {
         />
 
         <CardContent>
+        <img
+              src="/lanzamiento1.png"
+              alt="Lanzamiento 1"
+              style={{ width: "400px", height: "400px", objectFit: "contain"}
+            }
+            />
           <Typography gutterBottom variant="h5" component="div">
-            {product.title}
+            {product.name}
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
+            <Typography>
+             U$S {product.price}
+            </Typography>
+
         </CardContent>
 
         <CardActions>

@@ -8,10 +8,9 @@ export const Home = () => {
   return (
     <>
       <Portada />
-      <Presentacion/>
+      <Presentacion />
       <Lanzamiento />
       <CarouselHome />
-  
     </>
   );
 };

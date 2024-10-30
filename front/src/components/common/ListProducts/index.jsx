@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CardProduct } from "../cardProduct";
+import { CardProduct } from "../CardProduct";
 import { Grid2 } from "@mui/material";
 import axios from "axios";
 
@@ -7,7 +7,7 @@ export const ListProducts = () => {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = async () => {
-    const response = await axios.get("https://fakestoreapi.com/products");
+    const response = await axios.get("http://localhost:3000/products");
     setProducts(response.data);
   };
 
