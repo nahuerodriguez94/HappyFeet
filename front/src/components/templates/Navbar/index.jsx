@@ -19,11 +19,11 @@ import { Sidebar } from "../Sidebar";
 export const Navbar = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
-  
+  const [openLoginClient, setOpenLoginClient] = useState(false);
 
   const toggleSidebar = () => setOpenSidebar(!openSidebar);
   const toggleLogin = () => setOpenLogin(!openLogin);
-
+  const toggleLoginClient = () => setOpenLoginClient(!openLoginClient);
 
   return (
     <>
@@ -70,11 +70,11 @@ export const Navbar = () => {
             <Button variant="text" color="inherit" onClick={toggleSidebar}>
               <ShoppingCartTwoToneIcon />
             </Button>
-            <Button variant="text" color="inherit">
+            <Button variant="text" color="inherit" onClick={toggleLoginClient}>
               CLIENTE <PersonAddIcon />
             </Button>
             <Button variant="text" color="inherit" onClick={toggleLogin}>
-             VENDEDOR <PermIdentityTwoToneIcon />
+              VENDEDOR <PermIdentityTwoToneIcon />
             </Button>
           </Grid2>
         </Toolbar>
@@ -83,10 +83,36 @@ export const Navbar = () => {
       {/* Sidebar para el carrito */}
       <Sidebar open={openSidebar} closeSidebar={toggleSidebar} />
 
-      {/* Drawer para el login */}
-      <Drawer anchor="right" open={openLogin} onClose={toggleLogin}>
+      {/* Drawer para el login de vendedor */}
+      <Drawer
+         sx={{ 
+          width: 480, 
+          "& .MuiDrawer-paper": { 
+            width: 480, 
+          }
+        }}
+        anchor="right"
+        open={openLogin}
+        onClose={toggleLogin}
+      >
         <FormLogin setUser={() => setOpenLogin(false)} />
       </Drawer>
+
+      {/* Drawer para el login de cliente */}
+ <Drawer
+  sx={{ 
+    width: 480, 
+    "& .MuiDrawer-paper": { 
+      width: 480, 
+    }
+  }}
+  anchor="right"
+  open={openLoginClient}
+  onClose={toggleLoginClient}
+>
+  <FormLoginClient setUserClient={() => setOpenLoginClient(false)} />
+</Drawer>
+
     </>
   );
 };

@@ -23,7 +23,6 @@ export const SidebarLogin = ({ open, closeSidebarLogin }) => {
         sx={{
           width: 240,
           "& .MuiDrawer-paper": {
-            width: 240,
             boxSizing: "border-box",
             overflowY: "auto",
           },

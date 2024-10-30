@@ -1,115 +1,112 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import Grid2 from "@mui/material/Grid2";
+import { RegistroCliente } from "../RegistroCliente"; // Importa el formulario de registro
 
-export const FormLoginClient = ({ setUser }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export const FormLoginClient = ({ setUserClient }) => {
+  const [usernameClient, setUsernameClient] = useState("");
+  const [passwordClient, setPasswordClient] = useState("");
   const [error, setError] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false); // Estado para alternar entre login y registro
 
-  const handleSubmit = () => {
-    if (username === "" || password === "") {
+  const handleSubmitClient = () => {
+    if (usernameClient === "" || passwordClient === "") {
       setError(true);
       return;
     }
 
     setError(false);
 
-    if (username === "Marcos" && password === "1234") {
+    if (usernameClient === "Marcos" && passwordClient === "1234") {
       alert("Bienvenido a Happy Feet");
-      setUser("Marcos");
-      localStorage.setItem("user", JSON.stringify({ username: "Marcos", role: "client" }));
+      setUserClient("Marcos");
+      localStorage.setItem("userClient", JSON.stringify({ usernameClient: "Marcos", role: "client" }));
     } else {
       setError(true);
     }
   };
 
-  const handleLogout = () => {
-    // Borrar localStorage y restablecer estado de usuario
-    localStorage.removeItem("user");
-    setUser(null);
-    setUsername("");
-    setPassword("");
+  const handleLogoutClient = () => {
+    localStorage.removeItem("userClient");
+    setUserClient(null);
+    setUsernameClient("");
+    setPasswordClient("");
     alert("Has cerrado sesión");
   };
 
+  const toggleRegister = () => {
+    setIsRegistering(!isRegistering); // Alterna entre login y registro
+  };
+
   return (
-    <Form
-      name="basic"
-      labelCol={{
-        span: 8,
-      }}
-      wrapperCol={{
-        span: 16,
-      }}
-      style={{
-        maxWidth: 600,
-      }}
-      initialValues={{
-        remember: true,
-      }}
-      onFinish={handleSubmit}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: "Please input your username!",
-          },
-        ]}
-      >
-        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
-      </Form.Item>
-
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your password!",
-          },
-        ]}
-      >
-        <Input.Password
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Form.Item>
-
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
-
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Grid2 container spacing={2} sx={{ ml: "auto", mr: 5, alignItems: "center" }}>
-          <Button type="primary" htmlType="submit">
-            Iniciar sesión
+    <>
+      {isRegistering ? (
+        <>
+          <RegistroCliente />
+          <Button 
+            type="link" 
+            onClick={toggleRegister} 
+            style={{ display: "block", margin: "10px auto", color: "blue" }}
+          >
+            ¿Ya tienes cuenta? Inicia sesión
           </Button>
-          <Button type="primary" htmlType="submit">
-            Crear Cuenta
+        </>
+      ) : (
+        <Form
+          name="FormLoginClient"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          initialValues={{ remember: true }}
+          onFinish={handleSubmitClient}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Nombre de Usuario"
+            name="usernameClient"
+            rules={[{ required: true, message: "Por favor ingresa tu nombre de usuario!" }]}
+          >
+            <Input value={usernameClient} onChange={(e) => setUsernameClient(e.target.value)} />
+          </Form.Item>
+
+          <Form.Item
+            label="Contraseña"
+            name="passwordClient"
+            rules={[{ required: true, message: "Por favor ingresa tu contraseña!" }]}
+          >
+            <Input.Password value={passwordClient} onChange={(e) => setPasswordClient(e.target.value)} />
+          </Form.Item>
+
+          <Form.Item
+            name="remember"
+            valuePropName="checked"
+            wrapperCol={{ offset: 8, span: 16 }}
+          >
+            <Checkbox>Recordarme</Checkbox>
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Grid2 container spacing={2} sx={{ ml: "auto", mr: 5, alignItems: "center" }}>
+              <Button type="primary" htmlType="submit">
+                Iniciar sesión
+              </Button>
+              <Button type="default" onClick={handleLogoutClient}>
+                Cerrar Sesión
+              </Button>
+            </Grid2>
+          </Form.Item>
+
+          {error && <p style={{ color: "red", textAlign: "center" }}> Usuario o contraseña incorrectos </p>}
+
+          <Button 
+            type="link" 
+            onClick={toggleRegister} 
+            style={{ display: "block", margin: "10px auto", color: "blue" }}
+          >
+            Crear cuenta
           </Button>
-          <Button type="default" onClick={handleLogout}>
-            Cerrar Sesión
-          </Button>
-        </Grid2>
-      </Form.Item>
-      {error && <p style={{ color: "red", textAlign: "center" }}> Usuario o contraseña incorrectos </p>}
-    </Form>
+        </Form>
+      )}
+    </>
   );
 };

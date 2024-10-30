@@ -19,12 +19,14 @@ export const CardProduct = ({ product }) => {
         />
 
         <CardContent>
-        <img
+
+          
+        {/* <img
               src="/lanzamiento1.png"
               alt="Lanzamiento 1"
               style={{ width: "400px", height: "400px", objectFit: "contain"}
             }
-            />
+            /> */}
           <Typography gutterBottom variant="h5" component="div">
             {product.name}
           </Typography>

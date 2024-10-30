@@ -39,7 +39,7 @@ export const FormLogin = ({ setUser }) => {
 
   return (
     <Form
-      name="basic"
+      name="FormLogin"
       labelCol={{
         span: 8,
       }}
