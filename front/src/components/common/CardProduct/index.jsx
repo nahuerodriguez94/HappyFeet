@@ -14,7 +14,7 @@ export const CardProduct = ({ product }) => {
       <Card sx={{ maxWidth: "300px", m: 2 }}>
         <CardMedia
           sx={{ height: 250 }}
-          image= {product.image}
+          image= {"http://localhost:3000/" + product.image}
           title="green iguana"
         />
 

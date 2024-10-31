@@ -39,7 +39,19 @@ const updateClient = async (req, res) => {
   }
 };
 
+const obtenerClientes = async (req, res) => {
+  const body = req.body;
+
+  try {
+    const response = await Client.findAll()
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ status: "failure", message: error.message });
+  }
+};
+
 module.exports = {
   createClient,
   updateClient,
+  obtenerClientes
 };

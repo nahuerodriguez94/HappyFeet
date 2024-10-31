@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select } from "antd";
+import { createClient } from "../../../Servicios/client.services";
 
 const formItemLayout = {
   labelCol: {
@@ -21,10 +22,19 @@ const tailFormItemLayout = {
 export const RegistroCliente = () => {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log("Datos del formulario:", values);
+    try {
+      const response = await createClient(values)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+ 
   };
-
+  useEffect(() => {
+  
+  }, [] );
   return (
     <Form
       {...formItemLayout}
@@ -36,7 +46,7 @@ export const RegistroCliente = () => {
     >
       {/* Nombre de Cliente */}
       <Form.Item
-        name="nombreCliente"
+        name="username"
         label="Nombre de Cliente"
         rules={[{ required: true, message: "Por favor ingrese su nombre" }]}
       >
@@ -87,7 +97,7 @@ export const RegistroCliente = () => {
 
       {/* Dirección */}
       <Form.Item
-        name="direccion"
+        name="address"
         label="Dirección"
         rules={[{ required: true, message: "Por favor ingrese su dirección" }]}
       >
@@ -96,7 +106,7 @@ export const RegistroCliente = () => {
 
       {/* Teléfono */}
       <Form.Item
-        name="telefono"
+        name="phone"
         label="Teléfono"
         rules={[
           {
@@ -105,10 +115,7 @@ export const RegistroCliente = () => {
           },
         ]}
       >
-        <Input
-          placeholder="Teléfono"
-          style={{ width: "100%" }}
-        />
+        <Input placeholder="Teléfono" style={{ width: "100%" }} />
       </Form.Item>
 
       {/* Botón de registro */}

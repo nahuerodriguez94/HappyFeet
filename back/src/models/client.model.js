@@ -47,7 +47,6 @@ const Client= sequelize.define(
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
   },
   { timestamps: false }
