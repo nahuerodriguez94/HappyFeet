@@ -2,35 +2,42 @@ import React, { useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import Grid2 from "@mui/material/Grid2";
 import { RegistroCliente } from "../RegistroCliente"; // Importa el formulario de registro
+import { obtenerClientes } from "../../../Servicios/client.services";
 
 export const FormLoginClient = ({ setUserClient }) => {
-  const [usernameClient, setUsernameClient] = useState("");
-  const [passwordClient, setPasswordClient] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false); // Estado para alternar entre login y registro
 
-  const handleSubmitClient = () => {
-    if (usernameClient === "" || passwordClient === "") {
+  const handleSubmitClient = async () => {
+    if (username === "" || password === "") {
       setError(true);
       return;
     }
 
-    setError(false);
-
-    if (usernameClient === "Marcos" && passwordClient === "1234") {
-      alert("Bienvenido a Happy Feet");
-      setUserClient("Marcos");
-      localStorage.setItem("userClient", JSON.stringify({ usernameClient: "Marcos", role: "client" }));
-    } else {
+    try {
+      // Pasar username y password directamente como parámetros
+      const clientExists = await obtenerClientes(username, password);
+      if (clientExists) {
+        alert("Bienvenido a Happy Feet");
+        setUserClient(username);
+        localStorage.setItem("userClient", JSON.stringify({ username, role: "client" }));
+        setError(false);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
       setError(true);
+      console.error("Error al consultar el cliente:", err);
     }
   };
 
   const handleLogoutClient = () => {
-    localStorage.removeItem("userClient");
-    setUserClient(null);
-    setUsernameClient("");
-    setPasswordClient("");
+    localStorage.removeItem("userClient"); // Elimina el usuario del almacenamiento local
+    setUserClient(null); // Restablece el estado del usuario
+    setUsername("");
+    setPassword("");
     alert("Has cerrado sesión");
   };
 
@@ -63,18 +70,18 @@ export const FormLoginClient = ({ setUserClient }) => {
         >
           <Form.Item
             label="Nombre de Usuario"
-            name="usernameClient"
+            name="username"
             rules={[{ required: true, message: "Por favor ingresa tu nombre de usuario!" }]}
           >
-            <Input value={usernameClient} onChange={(e) => setUsernameClient(e.target.value)} />
+            <Input value={username} onChange={(e) => setUsername(e.target.value)} />
           </Form.Item>
 
           <Form.Item
             label="Contraseña"
-            name="passwordClient"
+            name="password"
             rules={[{ required: true, message: "Por favor ingresa tu contraseña!" }]}
           >
-            <Input.Password value={passwordClient} onChange={(e) => setPasswordClient(e.target.value)} />
+            <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
           </Form.Item>
 
           <Form.Item

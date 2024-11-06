@@ -30,5 +30,7 @@ export const Contact = () => {
         <TextField fullWidth id="" label="Mensaje" />
       </Grid2>
     </Grid2>
+   
   );
+ 
 };

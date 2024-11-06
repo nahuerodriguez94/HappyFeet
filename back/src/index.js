@@ -3,9 +3,10 @@ const clientRouter = require("./routes/client.routes.js");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require('cors');
-const ticketRouter = require("./routes/ticket.routes.js");
 const { sequelize } = require("./db/db.js");
-const productRoutes = require("./routes/product.routes.js")
+const productRoutes = require("./routes/product.routes.js");
+const cartRoutes = require("./routes/cart.routes.js");
+
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use("/", express.static('public'))
 // Sincronizacion con DB 
 const connection = async () => {
     try {
-      await sequelize.sync({alter: true});
+      await sequelize.sync();
     } catch (error) {
       console.log("Ocurrio un error al conectarse a la DB / ERROR: ", error.message);
     }
@@ -33,6 +34,9 @@ connection();
 
 //Router
 app.use("/cliente", clientRouter);
-app.use("/ticket", ticketRouter);
+// app.use("/ticket", ticketRouter);
 app.use("/product", productRoutes);
+app.use("/cart", cartRoutes);
+
+
 

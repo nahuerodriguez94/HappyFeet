@@ -2,12 +2,13 @@ const { Router } = require("express");
 const {
   createClient,
   obtenerClientes,
-  updateClient,
 } = require("../controllers/client.controllers");
 
 const router = Router();
 
-router.post("/", createClient);
-router.get("/", obtenerClientes);
+router.post("/", createClient); // Ruta para crear un cliente
+router.get("/", obtenerClientes); // Ruta para obtener clientes
 
 module.exports = router;
+
+

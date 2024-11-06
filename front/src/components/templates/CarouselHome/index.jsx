@@ -10,8 +10,7 @@ const contentStyle = {
 };
 
 export const CarouselHome = () => (
-  
-  <Carousel autoplay>   
+  <Carousel autoplay>
     <div style={contentStyle}>
       <img src="./tarjeta1.png" alt="Tarjeta 1" style={{ width: "100%", height: "80%", objectFit: "cover" }} />
     </div>
