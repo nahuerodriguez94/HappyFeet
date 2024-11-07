@@ -6,6 +6,7 @@ const cors = require('cors');
 const { sequelize } = require("./db/db.js");
 const productRoutes = require("./routes/product.routes.js");
 const cartRoutes = require("./routes/cart.routes.js");
+const userRoutes = require("./routes/userRoutes.js");
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use("/", express.static('public'))
+
 
 // Sincronizacion con DB 
 const connection = async () => {
@@ -34,9 +36,8 @@ connection();
 
 //Router
 app.use("/cliente", clientRouter);
-// app.use("/ticket", ticketRouter);
 app.use("/product", productRoutes);
 app.use("/cart", cartRoutes);
-
+app.use("/user", userRoutes);
 
 

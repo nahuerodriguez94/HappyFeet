@@ -10,13 +10,14 @@ const getCart = async (req, res) => {
       return res.status(401).json({ message: "Usuario no logueado" });
     }
 
+    // Busca el carrito del cliente en la base de datos
     const cart = await Cart.findOne({ where: { clientName } });
 
     if (!cart) {
       return res.status(404).json({ message: "Carrito no encontrado" });
     }
 
-    res.json(cart);
+    res.json({ message: "Carrito encontrado", cart });
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el carrito" });
   }
@@ -66,4 +67,24 @@ const generateTicketNumber = () => {
   return `TICKET-${Date.now()}`;
 };
 
-module.exports = { getCart, createCart };
+
+// Nuevo método para obtener todos los carritos
+const getAllCarts = async (req, res) => {
+  try {
+    // Busca todos los carritos en la base de datos
+    const carts = await Cart.findAll();
+
+    if (!carts || carts.length === 0) {
+      return res.status(404).json({ message: "No hay carritos disponibles" });
+    }
+
+    res.json({ message: "Carritos encontrados", carts });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los carritos" });
+  }
+};
+
+
+
+
+module.exports = { getCart, createCart, getAllCarts };

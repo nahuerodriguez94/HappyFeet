@@ -35,3 +35,14 @@ export const createCart = async (cartData) => {
     throw error;
   }
 };
+
+// Función para obtener todos los carritos (ventas)
+export const getAllCarts = async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/cart/getAll");
+    return response.data.carts;  // Devuelve los datos de los carritos (ventas)
+  } catch (error) {
+    console.error("Error obteniendo todos los carritos:", error);
+    throw error;
+  }
+};

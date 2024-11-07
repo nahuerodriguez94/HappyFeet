@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Paper
 } from "@mui/material";
 import ShoppingCartTwoToneIcon from "@mui/icons-material/ShoppingCartTwoTone";
 import PermIdentityTwoToneIcon from "@mui/icons-material/PermIdentityTwoTone";
@@ -43,13 +43,12 @@ export const Navbar = () => {
     }
   }, []);
 
-  // Manejo de pago y envío del carrito al backend
   const handlePayment = async () => {
     if (cartItems.length === 0) {
       alert("El carrito está vacío. Agrega productos para continuar.");
       return;
     }
-  
+
     const cartData = {
       clientName: username,
       products: cartItems.map((item) => ({
@@ -59,17 +58,18 @@ export const Navbar = () => {
       })),
       totalAmount: getTotalAmount(),
     };
-  
-    console.log("Datos enviados al servidor:", cartData);  // Verificar formato de los datos
-  
+
+    console.log("Datos enviados al servidor:", cartData);
+
     try {
-      await createCart(cartData); // Aqui Salta error 
+      await createCart(cartData);
       alert("Gracias por su compra. Su carrito ha sido guardado.");
     } catch (error) {
       console.error("Error al procesar el pago:", error.response?.data || error.message);
       alert("Ocurrió un error al procesar el pago. Intenta de nuevo.");
     }
   };
+
   return (
     <AppBar position="fixed" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
       <Toolbar>
@@ -187,7 +187,7 @@ export const Navbar = () => {
         open={openLogin}
         onClose={toggleLogin}
       >
-        <FormLogin setUser={() => setOpenLogin(false)} />
+       <FormLogin setUser={() => setOpenLogin(false)} />
       </Drawer>
 
       <Drawer
@@ -201,7 +201,7 @@ export const Navbar = () => {
         open={openLoginClient}
         onClose={toggleLoginClient}
       >
-        <FormLoginClient setUserClient={() => setOpenLoginClient(false)} />
+       <FormLoginClient setUserClient={() => setOpenLoginClient(false)} />
       </Drawer>
     </AppBar>
   );

@@ -1,116 +1,95 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
-import Grid2 from "@mui/material/Grid2";
+import { Grid2 } from "@mui/material";
+import { loginUser } from "../../../Servicios/user.services.js"; // Asegúrate de que la ruta sea correcta
 
 export const FormLogin = ({ setUser }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (username === "" || password === "") {
       setError(true);
       return;
     }
 
-    setError(false);
-
-    if (username === "Nahuel" && password === "1234") {
-      alert("Bienvenido Admin");
-      setUser("Nahuel");
-      localStorage.setItem("user", JSON.stringify({ username: "Nahuel", role: "admin" }));
-    } else if (username === "Pedro" && password === "56789") {
-      alert("Bienvenido Pedro");
-      setUser("Pedro");
-      localStorage.setItem("user", JSON.stringify({ username: "Pedro", role: "empleado" }));
-    } else {
+    try {
+      const userExists = await loginUser(username, password);
+      if (userExists) {
+        alert("Bienvenido a Happy Feet");
+        setUser(username);
+         // Almacena el usuario en localStorage bajo una clave descriptiva
+         localStorage.setItem("user", JSON.stringify({ username, role: "username" }));
+        setError(false);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
       setError(true);
+      console.error("Error al consultar el admin:", err);
     }
   };
 
-  const handleLogout = () => {
-    // Borrar localStorage y restablecer estado de usuario
-    localStorage.removeItem("user");
-    setUser(null);
+  const handleLogoutUser = () => {
+    localStorage.removeItem("user"); // Elimina el usuario del almacenamiento local
+    setUser(null); // Restablece el estado del usuario
     setUsername("");
     setPassword("");
     alert("Has cerrado sesión");
   };
 
-  return (
-    <Form
-      name="FormLogin"
-      labelCol={{
-        span: 8,
-      }}
-      wrapperCol={{
-        span: 16,
-      }}
-      style={{
-        maxWidth: 600,
-      }}
-      initialValues={{
-        remember: true,
-      }}
-      onFinish={handleSubmit}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: "Please input your username!",
-          },
-        ]}
-      >
-        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
-      </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your password!",
-          },
-        ]}
+return (
+  <>
+    
+      <Form
+        name="FormLogin"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={handleSubmit}
+        autoComplete="off"
       >
-        <Input.Password
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Form.Item>
+        <Form.Item
+          label="Nombre de Usuario"
+          name="username"
+          rules={[{ required: true, message: "Por favor ingresa tu nombre de usuario!" }]}
+        >
+          <Input value={username} onChange={(e) => setUsername(e.target.value)} />
+        </Form.Item>
 
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
+        <Form.Item
+          label="Contraseña"
+          name="password"
+          rules={[{ required: true, message: "Por favor ingresa tu contraseña!" }]}
+        >
+          <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
+        </Form.Item>
 
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Grid2 container spacing={2} sx={{ ml: "auto", mr: 5, alignItems: "center" }}>
-          <Button type="primary" htmlType="submit">
-            Iniciar sesión
-          </Button>
-          <Button type="default" onClick={handleLogout}>
-            Cerrar Sesión
-          </Button>
-        </Grid2>
-      </Form.Item>
-      {error && <p style={{ color: "red", textAlign: "center" }}> Usuario o contraseña incorrectos </p>}
-    </Form>
-  );
+        <Form.Item
+          name="remember"
+          valuePropName="checked"
+          wrapperCol={{ offset: 8, span: 16 }}
+        >
+          <Checkbox>Recordarme</Checkbox>
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Grid2 container spacing={2} sx={{ ml: "auto", mr: 5, alignItems: "center" }}>
+            <Button type="primary" htmlType="submit">
+              Iniciar sesión
+            </Button>
+            <Button type="default" onClick={handleLogoutUser}>
+              Cerrar Sesión
+            </Button>
+          </Grid2>
+        </Form.Item>
+
+        {error && <p style={{ color: "red", textAlign: "center" }}> Usuario o contraseña incorrectos </p>}
+
+      </Form>
+  </>
+);
 };
