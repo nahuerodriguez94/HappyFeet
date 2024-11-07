@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
 } from "@mui/material";
 import ShoppingCartTwoToneIcon from "@mui/icons-material/ShoppingCartTwoTone";
 import PermIdentityTwoToneIcon from "@mui/icons-material/PermIdentityTwoTone";
@@ -21,18 +21,22 @@ import { FormLogin } from "../FormLogin";
 import { FormLoginClient } from "../FormLoginClient";
 import { CartContext } from "../../../Servicios/CartContext/CartContext";
 import { Link } from "react-router-dom";
-import { createCart } from "../../../Servicios/cart.services";
+import { createCart, getAllCarts } from "../../../Servicios/cart.services"; // Importar `getAllCarts`
 
 export const Navbar = () => {
   const { cartItems, getTotalAmount } = useContext(CartContext);
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [openLoginClient, setOpenLoginClient] = useState(false);
+  const [openSales, setOpenSales] = useState(false);  // Estado para el panel de ventas
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticación
+  const [salesData, setSalesData] = useState([]); // Datos de ventas
   const [username, setUsername] = useState("Invitado");
 
   const toggleSidebar = () => setOpenSidebar(!openSidebar);
   const toggleLogin = () => setOpenLogin(!openLogin);
   const toggleLoginClient = () => setOpenLoginClient(!openLoginClient);
+  const toggleSales = () => setOpenSales(!openSales);  // Función para abrir/cerrar ventas
 
   // Leer 'username' desde localStorage
   useEffect(() => {
@@ -42,6 +46,12 @@ export const Navbar = () => {
       setUsername(parsedUser.username || "Invitado");
     }
   }, []);
+
+  // Manejar el inicio de sesión
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+    setOpenLogin(false);
+  };
 
   const handlePayment = async () => {
     if (cartItems.length === 0) {
@@ -59,14 +69,22 @@ export const Navbar = () => {
       totalAmount: getTotalAmount(),
     };
 
-    console.log("Datos enviados al servidor:", cartData);
-
     try {
       await createCart(cartData);
       alert("Gracias por su compra. Su carrito ha sido guardado.");
     } catch (error) {
       console.error("Error al procesar el pago:", error.response?.data || error.message);
       alert("Ocurrió un error al procesar el pago. Intenta de nuevo.");
+    }
+  };
+
+  // Función para obtener todas las ventas
+  const fetchSalesData = async () => {
+    try {
+      const carts = await getAllCarts();
+      setSalesData(carts);
+    } catch (error) {
+      console.error("Error al obtener los datos de ventas:", error);
     }
   };
 
@@ -109,6 +127,16 @@ export const Navbar = () => {
         <Button variant="text" color="inherit" onClick={toggleLogin}>
           LOG VENDEDOR <PermIdentityTwoToneIcon />
         </Button>
+
+        {/* Mostrar el botón "Ventas" solo si está autenticado */}
+        {isAuthenticated && (
+          <Button variant="contained" color="secondary" onClick={() => {
+            fetchSalesData();
+            toggleSales();
+          }}>
+            Ventas
+          </Button>
+        )}
       </Toolbar>
 
       <Drawer
@@ -122,6 +150,7 @@ export const Navbar = () => {
         }}
         anchor="right"
       >
+        {/* Contenido del carrito */}
         <Typography variant="h6" sx={{ padding: 2 }}>Carrito</Typography>
         {cartItems.length > 0 ? (
           <>
@@ -176,6 +205,45 @@ export const Navbar = () => {
         )}
       </Drawer>
 
+      {/* Panel de Ventas */}
+      <Drawer
+        open={openSales}
+        onClose={toggleSales}
+        anchor="right"
+      >
+        <Typography variant="h6" sx={{ padding: 2 }}>Ventas Registradas</Typography>
+        <TableContainer component={Paper} sx={{ padding: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Ticket</TableCell>
+                <TableCell>Cliente</TableCell>
+                <TableCell>Total</TableCell>
+                <TableCell>Productos</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {salesData.map((sale) => (
+                <TableRow key={sale.ticketNumber}>
+                  <TableCell>{sale.ticketNumber}</TableCell>
+                  <TableCell>{sale.clientName}</TableCell>
+                  <TableCell>{sale.totalAmount.toFixed(2)} U$S</TableCell>
+                  <TableCell>
+                    <ul>
+                      {sale.products.map((product, index) => (
+                        <li key={index}>
+                          {product.name} x {product.quantity} - U$S {product.price}
+                        </li>
+                      ))}
+                    </ul>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Drawer>
+
       <Drawer
         sx={{
           width: 480,
@@ -187,7 +255,7 @@ export const Navbar = () => {
         open={openLogin}
         onClose={toggleLogin}
       >
-       <FormLogin setUser={() => setOpenLogin(false)} />
+        <FormLogin setUser={handleLoginSuccess} />
       </Drawer>
 
       <Drawer
@@ -201,7 +269,7 @@ export const Navbar = () => {
         open={openLoginClient}
         onClose={toggleLoginClient}
       >
-       <FormLoginClient setUserClient={() => setOpenLoginClient(false)} />
+        <FormLoginClient setUserClient={() => setOpenLoginClient(false)} />
       </Drawer>
     </AppBar>
   );
